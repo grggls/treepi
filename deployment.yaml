@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: treepi
+  labels:
+    app: treepi
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: treepi
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: treepi
+        tier: frontend
+    spec:
+      containers:
+      - name: treepi
+        image: "treepi:local"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        ports:
+        - containerPort: 5000
+#      - name: nginx
+#        image: nginx-proxy
+#        ports:
+#        - containerPort: 80
+

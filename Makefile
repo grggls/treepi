@@ -5,7 +5,7 @@ BREW_CASK_DEPS=virtualbox minikube
 PIP_DEPS=pylint flask
 
 # --config
-.DEFAULT_GOAL := up
+.DEFAULT_GOAL := mkup
 
 
 # --targets
@@ -27,7 +27,7 @@ setup:
 	source env/bin/activate
 	pip3 install -r requirements.txt
 
-run:
+run: lint setup
 	FLASK_ENV=development FLASK_DEBUG=true python3 app.py
 
 clean:
@@ -36,8 +36,6 @@ clean:
 
 lint:
 	pylint --disable=C0103 app.py __init__.py
-
-run.local: lint setup run
 
 test:
 	echo && echo 
@@ -57,11 +55,11 @@ stop:
 run:
 	docker run -d --name treepi -p 5000:5000 treepi:local && sleep 3
 
-up: build stop run test
+local: build stop run test
 
 ### minikube commands follow
 mkstart:
-	minikube start && sleep 1
+	minikube start && minikube addons enable ingress && sleep 1
 
 mkconfig:
 	kubectl config use-context minikube
@@ -69,5 +67,11 @@ mkconfig:
 
 mkenv:
 	eval $$(minikube docker-env)	
+
+mkbuild:
+	docker build --tag treepi/minikube .
+
+mkapply:
+	kubectl apply -f ./deployment.yaml -f ./service.yaml -f ./ingress.yaml
 	
-mkup: mkenv build
+mkup: mkenv mkbuild mkapply
