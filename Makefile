@@ -3,8 +3,6 @@ SHELL := /bin/bash
 BREW_DEPS=git docker kubernetes-cli python3
 BREW_CASK_DEPS=virtualbox minikube
 PIP_DEPS=pylint flask
-LINT=pylint
-SEPARATE=echo && echo "------------------------" && echo
 
 # --config
 .DEFAULT_GOAL := up
@@ -37,7 +35,7 @@ clean:
 	find . -name ".pyc" | xargs rm -rf
 
 lint:
-	$(LINT) app.py __init__.py
+	pylint --disable=C0103 app.py __init__.py
 
 run.local: lint setup run
 
