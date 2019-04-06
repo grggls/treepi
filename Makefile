@@ -72,6 +72,11 @@ mkbuild:
 	docker build --tag treepi/minikube .
 
 mkapply:
-	kubectl apply -f ./deployment.yaml -f ./service.yaml -f ./ingress.yaml
+	kubectl delete namespace/treepi || true
+	kubectl apply -f ./deploy.yaml
+
+mktest:
+	curl -H"Host:local.ecosia.org" -kL http://192.168.99.100/tree && echo
+	curl -H"Host:local.ecosia.org" -kL http://192.168.99.100/version && echo
 	
 mkup: mkenv mkbuild mkapply
