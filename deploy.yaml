@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: treepi
+  labels:
+    app: treepi
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: treepi-deploy
+  namespace: treepi
+  labels:
+    app: treepi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: treepi
+  template:
+    metadata:
+      labels:
+        app: treepi
+    spec:
+      containers:
+      - name: treepi
+        image: treepi:local
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 5000
+#      - name: nginx
+#        image: nginx-proxy
+#        ports:
+#        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: treepi-svc
+  namespace: treepi
+  labels:
+    app: treepi
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    name: http
+  selector:
+    app: treepi
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: treepi-ingress
+  namespace: treepi
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+ rules:
+ - host: local.ecosia.org
+   http:
+     paths:
+     - path: /tree
+       backend:
+         serviceName: treepi-svc
+         servicePort: 5000
+     - path: /version
+       backend:
+         serviceName: treepi-svc
+         servicePort: 5000
