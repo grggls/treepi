@@ -65,11 +65,8 @@ mkconfig:
 	kubectl config use-context minikube
 	kubectl cluster-info
 
-mkenv:
-	eval $$(minikube docker-env)	
-
 mkbuild:
-	docker build --tag treepi/minikube .
+	eval $$(minikube docker-env) && docker build --tag treepi .
 
 mkapply:
 	kubectl delete namespace/treepi || true
@@ -77,6 +74,6 @@ mkapply:
 
 mktest:
 	curl -H"Host:local.ecosia.org" -kL http://192.168.99.100/tree && echo
-	curl -H"Host:local.ecosia.org" -kL http://192.168.99.100/version && echo
+	curl -H"Host:local.ecosia.org" -kL http://192.168.99.100/tree/version && echo
 	
-mkup: mkenv mkbuild mkapply
+mkup: mkbuild mkapply

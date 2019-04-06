@@ -11,18 +11,8 @@ from flask import send_from_directory
 
 App = Flask(__name__)
 
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 DATA = 'elm'
-
-
-@App.route('/version')
-def version():
-    """Return the API version."""
-    return App.response_class(
-        response=json.dumps({"version":VERSION}),
-        status=200,
-        mimetype='application/json'
-    )
 
 
 @App.route('/favicon.ico')
@@ -41,6 +31,16 @@ def tree():
         mimetype='application/json'
     )
     return response
+
+
+@App.route('/tree/version')
+def version():
+    """Return the API version."""
+    return App.response_class(
+        response=json.dumps({"version":VERSION}),
+        status=200,
+        mimetype='application/json'
+    )
 
 
 if __name__ == '__main__':
