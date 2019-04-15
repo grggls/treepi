@@ -11,7 +11,7 @@ from flask import send_from_directory
 
 App = Flask(__name__)
 
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 DATA = 'elm'
 
 
